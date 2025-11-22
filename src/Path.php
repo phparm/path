@@ -8,6 +8,13 @@ use Phparm\Entity\StringValue;
 use Phparm\Path\Option\PathOption;
 use RuntimeException;
 
+/**
+ * ========== property_hook_method ==========
+ * @method string getValue()
+ *
+ * @method $this setValue(string $value)
+ * ========== property_hook_method ==========
+ */
 class Path extends StringValue
 {
     /**
@@ -41,18 +48,19 @@ class Path extends StringValue
         return array_values($result);
     }
 
-    public function makeUsable(?PathOption $option = null): bool
+    public function makeUsable(?PathOption $option = null): self
     {
         if (!is_dir($this->value)) {
             if (!mkdir($this->value, $option?->getPermissions() ?? 0777, $option?->getRecursive() ?? true) && !is_dir($this->value)) {
                 throw new RuntimeException(sprintf('Failed to create directory "%s"', $this->value));
             }
         }
-        return true;
+        return $this;
     }
 
     public static function join(...$paths): string
     {
+        $paths = array_values(array_filter(array_map(static fn($item) => trim($item), $paths)));
         $result = [];
         $start = current($paths);
         $end = end($paths);

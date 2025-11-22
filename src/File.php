@@ -7,6 +7,19 @@ namespace Phparm\Path;
 use Phparm\Entity\Attribute;
 use Phparm\Entity\Option;
 
+/**
+ * ========== property_hook_method ==========
+ * @method string getDirname()
+ * @method string getBasename()
+ * @method string getFilename()
+ * @method string getExtension()
+ *
+ * @method $this setDirname(string $dirname)
+ * @method $this setBasename(string $basename)
+ * @method $this setFilename(string $filename)
+ * @method $this setExtension(string $extension)
+ * ========== property_hook_method ==========
+ */
 class File extends Attribute
 {
     public string $dirname;
@@ -25,7 +38,12 @@ class File extends Attribute
 
     public function isDir(): bool
     {
-        return is_dir(Path::join($this->dirname, $this->basename));
+        return is_dir($this->absolute());
+    }
+
+    public function exists(): bool
+    {
+        return file_exists($this->absolute());
     }
 
     public function absolute(): string
